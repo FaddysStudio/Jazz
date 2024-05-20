@@ -1,6 +1,8 @@
-?# rm -rf .FaddysScratch ; mkdir .FaddysScratch
+# Faddy's Looper
 
-?# cat - > .FaddysScratch/header.orc
+?# rm -rf .FaddysLooper ; mkdir .FaddysLooper
+
+?# cat - > .FaddysLooper/header.orc
 
 +==
 sr = 96000
@@ -9,10 +11,10 @@ nchnls = 2
 0dbfs = 1
 -==
 
-?# cat - > .FaddysScratch/looper.orc
+?# cat - > .FaddysLooper/looper.orc
 
 +==
-#include ".FaddysScratch/header.orc"
+#include "header.orc"
 
 #define track #STrack strget p4
 STrackLeft sprintf "%s/left", STrack
@@ -107,11 +109,12 @@ out aLeft, aRight
 
 endin
 
-?# cat - > .FaddysScratch/time.orc
+?# cat - > .FaddysLooper/time.orc
 
 ++= f 0 6000000
 
-?# roll beat.rs 0/dom 1/tak 3/tak 4/dom 6/tak | tee .FaddysScratch/maqsum.sco
+?# roll beat.rs 0/dom 1/tak 3/tak 4/dom 6/tak | tee .FaddysLooper/maqsum.sco
 
-?# cd .FaddysScratch ; cat time.orc maqsum.sco > looper.sco
-?# csound -odac .FaddysScratch/looper.orc .FaddysScratch/looper.sco
+?# cd .FaddysLooper ; cat time.orc maqsum.sco > looper.sco
+
+?# cd .FaddysLooper ; csound -odac looper.orc looper.sco

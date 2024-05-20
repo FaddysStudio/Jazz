@@ -11,6 +11,16 @@ import Scenarist from '@faddys/scenarist';
 
 await Scenarist ( new class Beat {
 
+bank = '../.FaddysBank';
+
+$bank ( $, value, ... argv ) {
+
+this .bank = value;
+
+return $ ( ... argv );
+
+}
+
 track = "track-" + Date .now ()
 
 $track ( $, value, ... argv ) {
@@ -63,7 +73,7 @@ return '';
 const beat = this;
 const [ step, sample ] = argv .shift () .split ( '/' );
 
-beat .sequence .push ( `i ${ beat .instrument }.${ beat .sequence .length } [${ step }/${ beat .measure }] 1 "${ beat .track }" ".FaddysBeat/${ sample }.wav"` );
+beat .sequence .push ( `i ${ beat .instrument }.${ beat .sequence .length } [${ step }/${ beat .measure }] 1 "${ beat .track }" "${ beat .bank }/${ sample }.wav"` );
 
 await $ ( ... argv );
 
