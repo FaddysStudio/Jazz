@@ -12,27 +12,31 @@ nchnls = 2
 ?# cat - > .FaddysScratch/looper.orc
 
 +==
-#include "header.orc"
+#include ".FaddysScratch/header.orc"
 
 #define track #STrack strget p4
 STrackLeft sprintf "%s/left", STrack
 STrackRight sprintf "%s/right", STrack#
 
-instr 1
+instr 13
 
 iRhythm nstrnum "rhythm"
 iInstance init frac ( p1 )
-iDuration init abs ( p3 )
 
-kSwing init .5
-kCycle metro2 1/iDuration, kSwing
+iCycle init abs ( p3 )
+kCycle metro 1/iCycle
 
-if kCycle == 1 then
+p3 = -iCycle
+
+kSwing jspline 1, 0, 4
+kSwing += .5
+
+if kCycle == 1 && kSwing > 0 then
 
 STrack strget p4
 SSample strget p5
 
-SRhythm sprintf "i %f 0 0 %s %s", iRhythm + iInstance, STrack, SSample
+SRhythm sprintf {{ i %f 0 0 "%s" "%s" }}, iRhythm + iInstance, STrack, SSample
 
 scoreline SRhythm, 1
 
@@ -45,8 +49,9 @@ instr rhythm
 SRhythm strget p5
 
 aRhythm [] diskin2  SRhythm
+p3 filelen SRhythm
 
-iChannels filelen aRhythm
+iChannels lenarray aRhythm
 
 if iChannels == 2 then
 
@@ -60,6 +65,10 @@ iRight init 0
 
 endif
 
+out aRhythm [ iLeft ], aRhythm [ iRight ]
+
+endin
+-==
 $track
 
 chnmix aRhythm [ iLeft ], STrackLeft
@@ -97,4 +106,12 @@ chnclear "right"
 out aLeft, aRight
 
 endin
--==
+
+?# cat - > .FaddysScratch/time.orc
+
+++= f 0 6000000
+
+?# roll beat.rs 0/dom 1/tak 3/tak 4/dom 6/tak | tee .FaddysScratch/maqsum.sco
+
+?# cd .FaddysScratch ; cat time.orc maqsum.sco > looper.sco
+?# csound -odac .FaddysScratch/looper.orc .FaddysScratch/looper.sco

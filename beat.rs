@@ -49,7 +49,7 @@ v ${ beat .length }
 
 ${ beat .sequence .join ( '\n' ) }
 
-s ${ beat .length }
+s; ${ beat .length }
 
 ` .trim () );
 
